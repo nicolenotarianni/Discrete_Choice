@@ -55,11 +55,15 @@ for(i in 1:length(unique(ewpw$Bird.ID))){ # For each individual bird...
                                 "CID" = rep(j, 20),
                                 "Alts" = c(1:20),
                                 "Use" = c(rep(0,19),1),
-                                "Lat" = c(randomcoords$long, ewpw_i_CID_j$Longitude),
-                                "Long" = c(randomcoords$lat, ewpw_i_CID_j$Latitude))
-    print(paste0("bird ", i, " choice ", j, " done!"))
+                                "Lat" = c(randomcoords$lat, ewpw_i_CID_j$Latitude),
+                                "Long" = c(randomcoords$long, ewpw_i_CID_j$Longitude))
+    #print(paste0("bird ", i, " choice ", j, " done!"))
     BigDF <- rbind(BigDF, choice_j_data) # add new chunk to big data.frame
+    
+    compl <- round(i/length(unique(ewpw$Bird.ID))*30, 0)
+    cat(paste0("\r [", strrep("🌞", compl), strrep("🌚", 30-compl), "] ", round(100*i/length(unique(ewpw$Bird.ID)),0)), "% done")
   }
 }
 nrow(BigDF)
 BigDF <- BigDF[2:nrow(BigDF),]
+write.csv(BigDF, "./FakeEWPWPtsForDC.csv")
