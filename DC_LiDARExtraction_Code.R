@@ -1,3 +1,5 @@
+library(raster)
+
 # read in fake EWPW data
 ewpw1 <- read.csv("./FakeEWPWPtsForDC.csv")
 plot(ewpw1$Long, ewpw1$Lat)
