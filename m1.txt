@@ -1,5 +1,4 @@
- # concatenate the model for JAGS; calling the model 'm1.txt'
-    
+
 model{
   
   ## Prior distributions (naive priors)
@@ -38,4 +37,5 @@ model{
       }
     }
 }
+
 

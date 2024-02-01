@@ -92,8 +92,8 @@ params <- c("mu", "beta", "y[99,1:20]") # mu = covariate, beta = individual
 # is for the predictions. We are using blank y-data for the predictions. The 1-20
 # is for blank choices
 
-cat(file = "m1.txt", " # concatenate the model for JAGS; calling the model 'm1.txt'
-    
+sink("m1.txt") # sink first; new addition on 1 Feb 2024 with Cam
+cat("
 model{
   
   ## Prior distributions (naive priors)
@@ -133,7 +133,8 @@ model{
     }
 }
 
-")
+", fill=T)
+sink()
 
 # define initial values
 # using normal distributions and log normal distribution for mu/sig, respectively
