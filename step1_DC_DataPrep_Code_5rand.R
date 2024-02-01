@@ -26,11 +26,11 @@ albers <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=37.5 +lon_0=-96 +x_0=0 +y_0=
 BigDF <- data.frame("SID" = 0, "CID" = 0, "Alts" = 0, "Use" = 0, "Lat" = 0, "Long" = 0)
 
 for(i in 1:length(unique(ewpw$Bird.ID))){ # For each individual bird...
-  # i = 10 #(e.g., bird # 10 = "51615")
+  # i = 2 #(e.g., bird # 10 = "51615")
   ewpw_i <- subset(ewpw, Bird.ID == unique(ewpw$Bird.ID)[i]) # subset the data to isolate bird "i"
   
   for(j in 1:nrow(ewpw_i)){ # For each GPS point/choice ID...
-    # j = 5 #(e.g., bird i, choice #5)
+    # j = 1 #(e.g., bird i, choice #5)
     ewpw_i_CID_j <- ewpw_i[j,] # subset ewpw_i for the jth choice
     
     # Plot and buffer coordinate location EWPW_i_CID_j
@@ -52,7 +52,7 @@ for(i in 1:length(unique(ewpw$Bird.ID))){ # For each individual bird...
     
     # assemble the data.frame chunk for bird i, choice j
     choice_j_data <- data.frame("SID" = rep(i, 5),
-                                "CID" = rep(i, 5),
+                                "CID" = rep(max(BigDF$CID)+1, 5),
                                 "Alts" = c(1:5),
                                 "Use" = c(rep(0,4),1),
                                 "Lat" = c(randomcoords$lat, ewpw_i_CID_j$Latitude),
@@ -66,4 +66,4 @@ for(i in 1:length(unique(ewpw$Bird.ID))){ # For each individual bird...
 }
 nrow(BigDF)
 BigDF <- BigDF[2:nrow(BigDF),]
-write.csv(BigDF, "./FakeEWPWPtsForDC.csv")
+write.csv(BigDF, "./FakeEWPWPtsForDC.csv", row.names = FALSE)

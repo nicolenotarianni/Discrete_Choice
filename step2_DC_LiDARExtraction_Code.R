@@ -32,4 +32,4 @@ ewpw1$percfirst5to1_100 <- percfirst5to1_100m
 ewpw1$rugosity_100 <- TopRug30m_p95_100m
 
 # export
-write.csv(ewpw1, "./FakeEWPWPtsForDCwCovs.csv")
+write.csv(ewpw1, "./FakeEWPWPtsForDCwCovs.csv", row.names = FALSE)

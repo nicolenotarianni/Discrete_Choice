@@ -4,7 +4,7 @@
 library(rjags); library(jagsUI); library(ggplot2)
 
 # read in fledlging dataset
-ewpw1 <- read.csv("./FakeEWPWPtsForDCwCovs1.csv",header=T)
+ewpw1 <- read.csv("./FakeEWPWPtsForDCwCovs.csv",header=T)
 
 head(ewpw1)
 
@@ -35,7 +35,7 @@ X1 <- scale(X1) # scale
 npred <- ncol(X1) # number of predictors
 
 # this tells the model which choice set belongs to which bird
-sub_id <- subset(ewpw1, Alts==20)$SID
+sub_id <- subset(ewpw1, Alts==5)$SID
 
 # response for the model
 y <- data.frame("CID" = ewpw1$CID, "Use" = ewpw1$Use, "Alts" = ewpw1$Alts)
@@ -76,7 +76,7 @@ jags.data <- list(npred = npred, # number of predictor variables (integer)
                   alts = as.integer(alts),
                   nalts = as.integer(nalts),
                   T = as.integer(T),
-                  y = as.matrix(ytest[,2:21]),
+                  y = as.matrix(ytest[,2:6]),
                   X1 = X1,
                   Z = Z)
 
