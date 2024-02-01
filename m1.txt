@@ -1,0 +1,41 @@
+ # concatenate the model for JAGS; calling the model 'm1.txt'
+    
+model{
+  
+  ## Prior distributions (naive priors)
+  for(a in 1:ninds){                    # for each subbrood/individual...
+    for(j in 1:npred){                  # for each variable...
+      beta[a,j] ~ dnorm(mu[j], tau[j])  # mean = mu[j], sd = tau[j]...assign the betas a prior
+      }
+    } # the beta priors are 'randomly' sampled from a normal distribution
+      # mu and tau are the hyperparameters
+      # mu is kinda like the 'average' response... and tau is the variation
+      # betas are sampled from the distribution from which betas are sampled
+      # hyperparameters effectively constrain the parameters
+      # mu constrains the betas -- beta is the coefficient that describes each bird's response to a hab covariate
+      # in other words, each beta (for bird a, and variable j) is sampled from a normal dist w/ mean mu and SD tau
+      
+  ## Hyperparameters -- the 'main'/'average' responses behaviors in the system
+  for(j in 1:npred){        # for each predictor variable (n=5)...   
+    mu[j] ~ dnorm(0, 0.01)  # mu, the mean of all betas, un-informative prior distribution; 
+    # average effect of all covariates across birds; 0.01 is standard for uninformative distribution
+    sig[j] ~ dunif(0, 100) # we are leaving tau and sigma be determined by the model
+    tau[j] <- 1/(sig[j] * sig[j]) # these describe the among-bird variation
+    }
+
+  ## Likelihood
+  for(i in 1:nchsets){                          # for each of the sets of choices (n=999)....
+    y[i, 1:nalts] ~ dmulti(p[i, 1:nalts], 1)
+    # the 'y' is the 0/1 response
+    # this model says: y data are described by ('~') this multiplicative distribution
+    # or... something along these lines
+    # Cam and DJ may need to digest this part a bit more to fully comprehend
+    
+    for(k in 1:nalts){ # for each of the 20 alternatives 
+      log(phi[i, k]) <- inprod(beta[sub_id[i],],Z[,i,k]) # this is basically doing the algebra for 'Y = a1 + b1*vegcov + b2*vegcov2...' 
+      p[i,k] <- phi[i,k] / sum(phi[i,1:nalts]) # 'the math is sound, but we don't know what it is' - Dr. Fiss, 2023
+      # the probability of choosing one of the alternatives in a choice set?
+      }
+    }
+}
+
