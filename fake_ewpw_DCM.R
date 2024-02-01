@@ -4,7 +4,7 @@
 library(rjags); library(jagsUI); library(ggplot2)
 
 # read in fledlging dataset
-ewpw1 <- read.csv("C:/Users/User/Desktop/dc2/Discrete_Choice/FakeEWPWPtsForDCwCovs.csv",header=T)
+ewpw1 <- read.csv("./FakeEWPWPtsForDCwCovs.csv",header=T)
 
 head(ewpw1)
 
@@ -28,7 +28,6 @@ p90_100m <- (ewpw1$p90_100)  # Covariate 3 = "p90 at 100 m"
 perc5to1_100m <- (ewpw1$perc5to1_100) # Covariate 4 = "perc5to1 at 100 m"
 percfirst5to1_100m <- (ewpw1$percfirst5to1_100) # Covariate 5 = "percfirst5to1 at 100 m"
 TopRug30m_p95_100m <- (ewpw1$rugosity_100) # Covariate 6 = "Top rugosity 30m, p95 at 100m"
-T
 
 # delineate the matrix of variables
 X1 <- cbind(iqr_100m, p75_100m, p90_100m, percfirst5to1_100m, perc5to1_100m, TopRug30m_p95_100m)
