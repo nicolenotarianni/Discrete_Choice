@@ -28,9 +28,9 @@ p90_100m <- (ewpw1$p90_100)  # Covariate 3 = "p90 at 100 m"
 perc5to1_100m <- (ewpw1$perc5to1_100) # Covariate 4 = "perc5to1 at 100 m"
 percfirst5to1_100m <- (ewpw1$percfirst5to1_100) # Covariate 5 = "percfirst5to1 at 100 m"
 TopRug30m_p95_100m <- (ewpw1$rugosity_100) # Covariate 6 = "Top rugosity 30m, p95 at 100m"
-
+cor(X1)#check correlation, keep what you're interested in. 
 # delineate the matrix of variables
-X1 <- cbind(iqr_100m, p75_100m, p90_100m, percfirst5to1_100m, perc5to1_100m, TopRug30m_p95_100m)
+X1 <- cbind(p90_100m, percfirst5to1_100m, TopRug30m_p95_100m)
 X1 <- scale(X1) # scale
 npred <- ncol(X1) # number of predictors
 
@@ -81,7 +81,7 @@ jags.data <- list(npred = npred, # number of predictor variables (integer)
                   Z = Z)
 
 ####################################
-params <- c("mu", "beta", "y[99,1:20]") # mu = covariate, beta = individual
+params <- c("mu", "beta") # mu = covariate, beta = individual
 # mu and beta are parameters that we want our model to summarize in the output
 # mu is the mean effect of each habitat covariate across birds
 # beta is the effect on each sub-brood/individual (part of the random effect structure)
@@ -192,8 +192,8 @@ mod1
 # you'll want to increase the thinning...
 
 #################################
-### make predictions for IQR ###### 
-totsamp <- 39500 #not sure if this is right 
+### make predictions for P90 ###### 
+totsamp <- 4998  #total samples from the joint posterior after calling mod1. got to this number through thinning rate and burnin 
 sel.sample <- sample(1:totsamp, size = totsamp) # 1 to totsamp in random order
 early.new <- seq(min(X1[,1]), max(X1[,1]), length.out = totsamp) # sequence of newdata; 1 to 100
 early.predict <- array(dim = c(totsamp, totsamp)) # array to hold predicted values
@@ -201,21 +201,21 @@ early.predict <- array(dim = c(totsamp, totsamp)) # array to hold predicted valu
 for(i in 1:totsamp){     # for each unique value in "early.new"...
   for(j in 1:totsamp){   # for each "random", simulated, value in sel.sample
     early.predict[i, j] <- # cell i,j in the "early.predict" array becomes:
-      1/(1 + exp(mod1$sims.list$mu[sel.sample[j],1] * early.new[i])) # odds/1+odds (probability scale) #i took away the negative
+      exp(mod1$sims.list$mu[sel.sample[j],1]*early.new[i])/(1 + exp(mod1$sims.list$mu[sel.sample[j],1] * early.new[i])) # odds/1+odds (probability scale) #i took away the negative
   }
 }
 
 # lower and upper confidence bounds/credible intervals
-LCB.IQR <- apply(early.predict, 1, quantile, prob = 0.025)
-UCB.IQR <- apply(early.predict, 1, quantile, prob = 0.975)
+LCB.p90 <- apply(early.predict, 1, quantile, prob = 0.025)
+UCB.p90 <- apply(early.predict, 1, quantile, prob = 0.975)
 
 # mean prediction
-mean.rel <- 1/(1+exp(-mod1$mean$mu[1]*early.new))#odds/1+odds (probability scale)
+mean.rel <- exp(mod1$mean$mu[1]*early.new)/(1+exp(mod1$mean$mu[1]*early.new))#odds/1+odds (probability scale)#removed negative
 
-plot(x = seq(min(iqr_100m), max(iqr_100m), length.out = 39500), y = mean.rel, 
-     type = "l", ylim = c(0,max(UCB.IQR)),
-     xlab = "iqr_100m",
+plot(x = seq(min(p90_100m), max(p90_100m), length.out = 4998), y = mean.rel, 
+     type = "l", ylim = c(0,max(UCB.p90)),
+     xlab = "p90",
      ylab = "Pobability of Use")
-lines(x = seq(min(iqr_100m), max(iqr_100m), length.out = 39500), y = LCB.IQR, lty  = 2)
-lines(x = seq(min(iqr_100m), max(iqr_100m), length.out = 39500), y = UCB.IQR, lty  = 2)
+lines(x = seq(min(p90_100m), max(p90_100m), length.out = 4998), y = LCB.p90, lty  = 2)
+lines(x = seq(min(p90_100m), max(p90_100m), length.out = 4998), y = UCB.p90, lty  = 2)
 
