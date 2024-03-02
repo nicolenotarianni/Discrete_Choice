@@ -195,22 +195,22 @@ mod1
 ### make predictions for P90 ###### 
 totsamp <- 4998  #total samples from the joint posterior after calling mod1. got to this number through thinning rate and burnin 
 sel.sample <- sample(1:totsamp, size = totsamp) # 1 to totsamp in random order
-early.new <- seq(min(X1[,1]), max(X1[,1]), length.out = totsamp) # sequence of newdata; 1 to 100
-early.predict <- array(dim = c(totsamp, totsamp)) # array to hold predicted values
+P90.new <- seq(min(X1[,1]), max(X1[,1]), length.out = totsamp) # sequence of newdata; 1 to 100
+P90.predict <- array(dim = c(totsamp, totsamp)) # array to hold predicted values
 
-for(i in 1:totsamp){     # for each unique value in "early.new"...
+for(i in 1:totsamp){     # for each unique value in "p90.new"...
   for(j in 1:totsamp){   # for each "random", simulated, value in sel.sample
-    early.predict[i, j] <- # cell i,j in the "early.predict" array becomes:
-      exp(mod1$sims.list$mu[sel.sample[j],1]*early.new[i])/(1 + exp(mod1$sims.list$mu[sel.sample[j],1] * early.new[i])) # odds/1+odds (probability scale) #i took away the negative
+    P90.predict[i, j] <- # cell i,j in the "P90.predict" array becomes:
+      exp(mod1$sims.list$mu[sel.sample[j],1]*P90.new[i])/(1 + exp(mod1$sims.list$mu[sel.sample[j],1] * P90.new[i])) # odds/1+odds (probability scale) #i took away the negative
   }
 }
 
 # lower and upper confidence bounds/credible intervals
-LCB.p90 <- apply(early.predict, 1, quantile, prob = 0.025)
-UCB.p90 <- apply(early.predict, 1, quantile, prob = 0.975)
+LCB.p90 <- apply(P90.predict, 1, quantile, prob = 0.025)
+UCB.p90 <- apply(P90.predict, 1, quantile, prob = 0.975)
 
 # mean prediction
-mean.rel <- exp(mod1$mean$mu[1]*early.new)/(1+exp(mod1$mean$mu[1]*early.new))#odds/1+odds (probability scale)#removed negative
+mean.rel <- exp(mod1$mean$mu[1]*P90.new)/(1+exp(mod1$mean$mu[1]*P90.new))#odds/1+odds (probability scale)#removed negative
 
 plot(x = seq(min(p90_100m), max(p90_100m), length.out = 4998), y = mean.rel, 
      type = "l", ylim = c(0,max(UCB.p90)),
@@ -219,3 +219,60 @@ plot(x = seq(min(p90_100m), max(p90_100m), length.out = 4998), y = mean.rel,
 lines(x = seq(min(p90_100m), max(p90_100m), length.out = 4998), y = LCB.p90, lty  = 2)
 lines(x = seq(min(p90_100m), max(p90_100m), length.out = 4998), y = UCB.p90, lty  = 2)
 
+#################################
+### make predictions for percfirst5to1_100m  ###### 
+totsamp <- 4998  #total samples from the joint posterior after calling mod1. got to this number through thinning rate and burnin 
+sel.sample1 <- sample(1:totsamp, size = totsamp) # 1 to totsamp in random order
+first5to1.new <- seq(min(X1[,1]), max(X1[,1]), length.out = totsamp) # sequence of newdata; 1 to 100
+first5to1.predict <- array(dim = c(totsamp, totsamp)) # array to hold predicted values
+
+for(i in 1:totsamp){     # for each unique value in "p90.new"...
+  for(j in 1:totsamp){   # for each "random", simulated, value in sel.sample
+    first5to1.predict[i, j] <- # cell i,j in the "P90.predict" array becomes:
+      exp(mod1$sims.list$mu[sel.sample1[j],1]*first5to1.new[i])/(1 + exp(mod1$sims.list$mu[sel.sample1[j],1] * first5to1.new[i])) # odds/1+odds (probability scale) #i took away the negative
+  }
+}
+
+# lower and upper confidence bounds/credible intervals
+LCB.first5to1 <- apply(first5to1.predict, 1, quantile, prob = 0.025)
+UCB.first5to1 <- apply(first5to1.predict, 1, quantile, prob = 0.975)
+
+# mean prediction
+mean.rel1 <- exp(mod1$mean$mu[1]*first5to1.new)/(1+exp(mod1$mean$mu[1]*first5to1.new))#odds/1+odds (probability scale)#removed negative
+
+plot(x = seq(min(percfirst5to1_100m), max(percfirst5to1_100m), length.out = 4998), y = mean.rel1, 
+     type = "l", ylim = c(0,max(UCB.first5to1)),
+     xlab = "Percfirst 5 to 1_100m",
+     ylab = "Pobability of Use")
+lines(x = seq(min(percfirst5to1_100m), max(percfirst5to1_100m), length.out = 4998), y = LCB.first5to1, lty  = 2)
+lines(x = seq(min(percfirst5to1_100m), max(percfirst5to1_100m), length.out = 4998), y = UCB.first5to1, lty  = 2)
+
+
+
+#################################
+### make predictions for TopRug30m_p95_100m ###### 
+totsamp <- 4998  #total samples from the joint posterior after calling mod1. got to this number through thinning rate and burnin 
+sel.sample2 <- sample(1:totsamp, size = totsamp) # 1 to totsamp in random order
+toprug30m_p95.new <- seq(min(X1[,1]), max(X1[,1]), length.out = totsamp) # sequence of newdata; 1 to 100
+toprug30m_p95.predict <- array(dim = c(totsamp, totsamp)) # array to hold predicted values
+
+for(i in 1:totsamp){     # for each unique value in "p90.new"...
+  for(j in 1:totsamp){   # for each "random", simulated, value in sel.sample
+    toprug30m_p95.predict[i, j] <- # cell i,j in the "P90.predict" array becomes:
+      exp(mod1$sims.list$mu[sel.sample2[j],1]*toprug30m_p95.new[i])/(1 + exp(mod1$sims.list$mu[sel.sample2[j],1] * toprug30m_p95.new[i])) # odds/1+odds (probability scale) #i took away the negative
+  }
+}
+
+# lower and upper confidence bounds/credible intervals
+LCB.toprug30m_p95 <- apply(toprug30m_p95.predict, 1, quantile, prob = 0.025)
+UCB.toprug30m_p95 <- apply(toprug30m_p95.predict, 1, quantile, prob = 0.975)
+
+# mean prediction
+mean.rel2 <- exp(mod1$mean$mu[1]*toprug30m_p95.new)/(1+exp(mod1$mean$mu[1]*toprug30m_p95.new))#odds/1+odds (probability scale)#removed negative
+
+plot(x = seq(min(TopRug30m_p95_100m), max(TopRug30m_p95_100m), length.out = 4998), y = mean.rel2, 
+     type = "l", ylim = c(0,max(UCB.toprug30m_p95)),
+     xlab = "Top Rugosity_30m_p95_100m",
+     ylab = "Pobability of Use")
+lines(x = seq(min(TopRug30m_p95_100m), max(TopRug30m_p95_100m), length.out = 4998), y = LCB.toprug30m_p95, lty  = 2)
+lines(x = seq(min(TopRug30m_p95_100m), max(TopRug30m_p95_100m), length.out = 4998), y = UCB.toprug30m_p95, lty  = 2)
