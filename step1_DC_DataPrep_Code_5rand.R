@@ -1,3 +1,5 @@
+#this is the prep code for 5 randoms
+
 library(raster); library(rgeos); library(sf)
 
 ewpw <- read.csv("./EWPW_DCM_CID.csv")
