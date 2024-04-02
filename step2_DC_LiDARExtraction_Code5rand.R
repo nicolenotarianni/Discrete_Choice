@@ -1,4 +1,5 @@
 #this is the LiDAR extraction code for 5 randoms
+
 library(raster)
 
 # read in fake EWPW data
